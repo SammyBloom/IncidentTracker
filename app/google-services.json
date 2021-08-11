@@ -1,0 +1,39 @@
+{
+  "project_info": {
+    "project_number": "23400292709",
+    "project_id": "incidenttracker-b2d32",
+    "storage_bucket": "incidenttracker-b2d32.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:23400292709:android:d2714337c8983506e7c18c",
+        "android_client_info": {
+          "package_name": "com.example.incidenttracker"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "23400292709-4of1df81lq43la07jc2u4i5953tdda3t.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyCOSTQhey4HUcvNaZ9bbutLB3Z2GuLxcoM"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "23400292709-4of1df81lq43la07jc2u4i5953tdda3t.apps.googleusercontent.com",
+              "client_type": 3
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
