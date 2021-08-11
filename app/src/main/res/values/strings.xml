@@ -1,4 +1,12 @@
 <resources>
     <string name="app_name">IncidentTracker</string>
     <string name="title_activity_maps">MapsActivity</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string-array name="incidents">
+        <item>Accident</item>
+        <item>Road Blocked</item>
+        <item>Road Construction</item>
+        <item>Fire</item>
+        <item>Others</item>
+    </string-array>
 </resources>
