@@ -32,7 +32,7 @@ A simple app that is used to report and view incidents on Google maps. Firebase 
 ## General Preview
 #### Screenshots of the app
 
-![Screenshot 0](images/Launch.jpg) 
+Will be uploaded shortly...
 
 ##### Add Incident:
 
