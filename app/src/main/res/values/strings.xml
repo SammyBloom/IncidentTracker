@@ -6,6 +6,7 @@
         <item>Accident</item>
         <item>Road Blocked</item>
         <item>Road Construction</item>
+        <item>Crime/Theft</item>
         <item>Fire</item>
         <item>Others</item>
     </string-array>

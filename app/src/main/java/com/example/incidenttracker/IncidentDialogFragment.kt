@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.WindowManager
 import android.widget.AdapterView
 import android.widget.Spinner
 import android.widget.Toast
@@ -16,11 +17,12 @@ import com.google.firebase.firestore.DocumentReference
 import com.google.firebase.firestore.FirebaseFirestore
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
+import com.google.type.LatLng
 
 class IncidentDialogFragment : DialogFragment() {
 
     private lateinit var binding: FragmentDialogBinding
-    lateinit var db: DocumentReference
+    lateinit var db: FirebaseFirestore
     var incidentText: String? = null
     var incidentDescription: String? = null
 
@@ -30,30 +32,43 @@ class IncidentDialogFragment : DialogFragment() {
     ): View? {
         // Inflate the layout for this fragment
         binding = FragmentDialogBinding.inflate(layoutInflater)
-        db = FirebaseFirestore.getInstance().document("reports/incident")
+        db = FirebaseFirestore.getInstance()
         binding.spinner.onItemSelectedListener = object : AdapterView.OnItemSelectedListener{
             override fun onNothingSelected(parent: AdapterView<*>?) {
 
             }
-
             override fun onItemSelected(parent: AdapterView<*>?, view: View?, position: Int, id: Long) {
                 incidentText= parent?.getItemAtPosition(position).toString()
             }
         }
-        incidentDescription = binding.descriptionEditText.text.toString()
         binding.submitIncident.setOnClickListener { submitToFirebase() }
 
         return binding.root
+
+    }
+
+    override fun onStart() {
+        super.onStart()
+        dialog?.window?.setLayout(
+            WindowManager.LayoutParams.MATCH_PARENT,
+            WindowManager.LayoutParams.WRAP_CONTENT
+        )
     }
 
     private fun submitToFirebase() {
+        incidentDescription = binding.descriptionEditText.text.toString()
+        val lat = arguments?.get(LAT_ARGS)
+        val lng = arguments?.get(LNG_ARGS)
+
         if (!incidentText?.isEmpty()!! || !incidentDescription?.isEmpty()!!){
             try {
                 val items = HashMap<String, Any>()
-                items.put("incidentText1", incidentText!!)
-                items.put("incidentDescription1", incidentDescription!!)
-                db.collection("reports").document("incident").set(items).addOnSuccessListener {
-                    Toast.makeText(activity, "Uploaded", Toast.LENGTH_LONG).show()
+                items.put("incidentType", incidentText!!)
+                items.put("incidentDescription", incidentDescription!!)
+                lat?.let { items.put("incidentLat", it) }
+                lng?.let { items.put("incidentLng", it) }
+                db.collection("reports").add(items).addOnSuccessListener {
+                    Toast.makeText(activity, "Incident Uploaded", Toast.LENGTH_LONG).show()
                 }.addOnFailureListener {
                     exception: java.lang.Exception -> Toast.makeText(activity, exception.toString(), Toast.LENGTH_LONG).show()
                 }
@@ -67,9 +82,17 @@ class IncidentDialogFragment : DialogFragment() {
     }
 
     companion object {
-
+        val LAT_ARGS = "latargs"
+        val LNG_ARGS = "lngargs"
         @JvmStatic
-        fun newInstance(param1: String, param2: String) = IncidentDialogFragment
+        fun newInstance(lat: Double, lng : Double) : IncidentDialogFragment{
 
+            val args = Bundle()
+            args.putDouble(LAT_ARGS, lat)
+            args.putDouble(LNG_ARGS, lng)
+            val fragment = IncidentDialogFragment()
+            fragment.arguments = args
+            return fragment
+        }
     }
 }
