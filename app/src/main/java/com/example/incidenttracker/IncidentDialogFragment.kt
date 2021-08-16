@@ -59,6 +59,7 @@ class IncidentDialogFragment : DialogFragment() {
         incidentDescription = binding.descriptionEditText.text.toString()
         val lat = arguments?.get(LAT_ARGS)
         val lng = arguments?.get(LNG_ARGS)
+        val loc = arguments?.get(LOC_ARGS)
 
         if (!incidentText?.isEmpty()!! || !incidentDescription?.isEmpty()!!){
             try {
@@ -67,6 +68,7 @@ class IncidentDialogFragment : DialogFragment() {
                 items.put("incidentDescription", incidentDescription!!)
                 lat?.let { items.put("incidentLat", it) }
                 lng?.let { items.put("incidentLng", it) }
+                loc?.let { items.put("incidentLocation", it) }
                 db.collection("reports").add(items).addOnSuccessListener {
                     Toast.makeText(activity, "Incident Uploaded", Toast.LENGTH_LONG).show()
                 }.addOnFailureListener {
@@ -84,12 +86,14 @@ class IncidentDialogFragment : DialogFragment() {
     companion object {
         val LAT_ARGS = "latargs"
         val LNG_ARGS = "lngargs"
+        val LOC_ARGS = "locargs"
         @JvmStatic
-        fun newInstance(lat: Double, lng : Double) : IncidentDialogFragment{
+        fun newInstance(lat: Double, lng : Double, loc : String) : IncidentDialogFragment{
 
             val args = Bundle()
             args.putDouble(LAT_ARGS, lat)
             args.putDouble(LNG_ARGS, lng)
+            args.putString(LOC_ARGS, loc)
             val fragment = IncidentDialogFragment()
             fragment.arguments = args
             return fragment

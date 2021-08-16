@@ -4,6 +4,8 @@ import android.content.ContentValues.TAG
 import android.content.Context
 import android.graphics.Bitmap
 import android.graphics.Canvas
+import android.location.Address
+import android.location.Geocoder
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.util.Log
@@ -20,6 +22,7 @@ import com.example.incidenttracker.databinding.ActivityMapsBinding
 import com.google.android.gms.maps.model.BitmapDescriptor
 import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.firebase.firestore.FirebaseFirestore
+import java.util.*
 
 class MapsActivity : AppCompatActivity() {
 
@@ -53,6 +56,7 @@ class MapsActivity : AppCompatActivity() {
 
                             for (incident in incidentList) {
                                 val location = LatLng(incident.incidentLat, incident.incidentLng)
+                                val locName = incident.incidentLocation
                                 val bitmapDescriptor : BitmapDescriptor? = when (incident.incidentType){
                                     "Accident" -> bitmapDescriptorFromVector(this@MapsActivity, R.drawable.ic_accident_24)
                                     "Road Block" -> bitmapDescriptorFromVector(this@MapsActivity, R.drawable.ic_road_block)
@@ -61,21 +65,32 @@ class MapsActivity : AppCompatActivity() {
                                     "Fire" -> bitmapDescriptorFromVector(this@MapsActivity, R.drawable.ic_fire)
                                     else -> bitmapDescriptorFromVector(this@MapsActivity, R.drawable.ic_other)
                                 }
-                                mMap.addMarker(MarkerOptions().position(location)).setIcon(bitmapDescriptor)
+
+                                mMap.addMarker(MarkerOptions().position(location).title(locName))?.setIcon(bitmapDescriptor)
                                 mMap.moveCamera(CameraUpdateFactory.newLatLng(location))
                             }
 
                             mMap.setOnMapLongClickListener {
-                                var lat: Double = it.latitude
-                                var lng: Double = it.longitude
+                                val lat: Double = it.latitude
+                                val lng: Double = it.longitude
+
+                                val context :Context = applicationContext
+                                val geocoder = Geocoder(context, Locale.getDefault())
+                                val addresses: List<Address> = geocoder.getFromLocation(lat, lng, 1)
+                                val loc = addresses[0].locality
+                                Log.d(TAG, "location: ${loc}")
                                 Toast.makeText(
                                     this@MapsActivity,
                                     "opened dialog",
                                     Toast.LENGTH_LONG
                                 ).show()
-                                IncidentDialogFragment.newInstance(lat, lng)
+                                IncidentDialogFragment.newInstance(lat, lng, loc)
                                     .show(supportFragmentManager, "")
                             }
+
+//                            mMap.setOnMarkerClickListener {
+//
+//                            }
                         }
                     })
 
@@ -97,4 +112,6 @@ class MapsActivity : AppCompatActivity() {
             BitmapDescriptorFactory.fromBitmap(bitmap)
         }
     }
+
+
 }
